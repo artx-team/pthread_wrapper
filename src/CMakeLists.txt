@@ -1,0 +1,1 @@
+install(FILES pthread_wrapper.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
