@@ -56,7 +56,7 @@
 #define __pthread_var1(x, y) __pthread_var2(x, __pthread_concat(y, __LINE__))
 #define __pthread_var2(x, y) __pthread_concat(__pthread_tmp, __pthread_concat(y, x))
 
-#define __pthread_rc(__pthread_func, __rc, ...) ({ \
+#define __pthread_rc(__pthread_func, __rc, ...) __extension__ ({ \
         int __pthread_var(rc) = (__pthread_func)(__VA_ARGS__); \
         if (__pthread_unlikely(__pthread_var(rc) && __pthread_var(rc) != (__rc))) \
             abort(); \
@@ -163,7 +163,7 @@ void __pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 
 // pthread_mutex_t
 #ifndef NDEBUG
-#define pthread_mutex_init(lock, attr) ({ \
+#define pthread_mutex_init(lock, attr) __extension__ ({ \
         int __pthread_var(rc); \
         pthread_mutexattr_t *__pthread_var(tmp) = (attr); \
         if (!__pthread_var(tmp)) { \
