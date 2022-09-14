@@ -106,17 +106,6 @@
 #define pthread_setattr_default_np(...)         __pthread_rc(pthread_setattr_default_np, 0, ## __VA_ARGS__)
 #define pthread_getattr_np(...)                 __pthread_rc(pthread_getattr_np, 0, ## __VA_ARGS__)
 
-static inline __pthread_unused
-void __pthread_attr_destroy(pthread_attr_t *attr)
-{
-    if (__pthread_likely(attr))
-        pthread_attr_destroy(attr);
-}
-
-#define PTHREAD_ATTR_RAII(__name, __init) \
-    RAII(pthread_attr_t *, __name, __pthread_attr_destroy, __init); \
-    pthread_attr_init(__name)
-
 // pthread_t
 #define pthread_create(...)                     __pthread_rc(pthread_create, 0, ## __VA_ARGS__)
 #define pthread_join(...)                       __pthread_rc(pthread_join, 0, ## __VA_ARGS__)
@@ -150,17 +139,6 @@ void __pthread_attr_destroy(pthread_attr_t *attr)
 #define pthread_mutexattr_getrobust_np(...)     __pthread_rc(pthread_mutexattr_getrobust_np, 0, ## __VA_ARGS__)
 #define pthread_mutexattr_setrobust_np(...)     __pthread_rc(pthread_mutexattr_setrobust_np, 0, ## __VA_ARGS__)
 
-static inline __pthread_unused
-void __pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
-{
-    if (__pthread_likely(attr))
-        pthread_mutexattr_destroy(attr);
-}
-
-#define PTHREAD_MUTEXATTR_RAII(__name, __init) \
-    RAII(pthread_mutexattr_t *, __name, __pthread_mutexattr_destroy, __init); \
-    pthread_mutexattr_init(__name)
-
 // pthread_mutex_t
 #ifndef NDEBUG
 #define pthread_mutex_init(lock, attr) __extension__ ({ \
@@ -191,17 +169,6 @@ void __pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 #define pthread_mutex_consistent(...)           __pthread_rc(pthread_mutex_consistent, 0, ## __VA_ARGS__)
 #define pthread_mutex_consistent_np(...)        __pthread_rc(pthread_mutex_consistent_np, 0, ## __VA_ARGS__)
 
-static inline __pthread_unused
-void __pthread_mutex_unlock(pthread_mutex_t *lock)
-{
-    if (__pthread_likely(lock))
-        pthread_mutex_unlock(lock);
-}
-
-#define PTHREAD_MUTEX_RAII(__name, __init) \
-    RAII(pthread_mutex_t *, __name, __pthread_mutex_unlock, __init); \
-    pthread_mutex_lock(__name)
-
 // pthread_rwlockattr_t
 #define pthread_rwlockattr_init(...)            __pthread_rc(pthread_rwlockattr_init, 0, ## __VA_ARGS__)
 #define pthread_rwlockattr_destroy(...)         __pthread_rc(pthread_rwlockattr_destroy, 0, ## __VA_ARGS__)
@@ -209,17 +176,6 @@ void __pthread_mutex_unlock(pthread_mutex_t *lock)
 #define pthread_rwlockattr_setpshared(...)      __pthread_rc(pthread_rwlockattr_setpshared, 0, ## __VA_ARGS__)
 #define pthread_rwlockattr_getkind_np(...)      __pthread_rc(pthread_rwlockattr_getkind_np, 0, ## __VA_ARGS__)
 #define pthread_rwlockattr_setkind_np(...)      __pthread_rc(pthread_rwlockattr_setkind_np, 0, ## __VA_ARGS__)
-
-static inline __pthread_unused
-void __pthread_rwlockattr_destroy(pthread_rwlockattr_t *attr)
-{
-    if (__pthread_likely(attr))
-        pthread_rwlockattr_destroy(attr);
-}
-
-#define PTHREAD_RWLOCKATTR_RAII(__name, __init) \
-    RAII(pthread_rwlockattr_t *, __name, __pthread_rwlockattr_destroy, __init); \
-    pthread_rwlockattr_init(__name)
 
 // pthread_rwlock_t
 #define pthread_rwlock_init(...)                __pthread_rc(pthread_rwlock_init, 0, ## __VA_ARGS__)
@@ -234,24 +190,6 @@ void __pthread_rwlockattr_destroy(pthread_rwlockattr_t *attr)
 #define pthread_rwlock_clockwrlock(...)         __pthread_rc(pthread_rwlock_clockwrlock, ETIMEDOUT, ## __VA_ARGS__)
 #define pthread_rwlock_unlock(...)              __pthread_rc(pthread_rwlock_unlock, 0, ## __VA_ARGS__)
 
-static inline __pthread_unused
-void __pthread_rwlock_unlock(pthread_rwlock_t *lock)
-{
-    if (__pthread_likely(lock))
-        pthread_rwlock_unlock(lock);
-}
-
-#define PTHREAD_RWLOCK_RAII(__name, __init) \
-    RAII(pthread_rwlock_t *, __name, __pthread_rwlock_unlock, __init) \
-
-#define PTHREAD_RDLOCK_RAII(__name, __init) \
-    PTHREAD_RWLOCK_RAII(__name, __init); \
-    pthread_rwlock_rdlock(__name)
-
-#define PTHREAD_WRLOCK_RAII(__name, __init) \
-    PTHREAD_RWLOCK_RAII(__name, __init); \
-    pthread_rwlock_wrlock(__name)
-
 // pthread_condattr_t
 #define pthread_condattr_init(...)              __pthread_rc(pthread_condattr_init, 0, ## __VA_ARGS__)
 #define pthread_condattr_destroy(...)           __pthread_rc(pthread_condattr_destroy, 0, ## __VA_ARGS__)
@@ -259,17 +197,6 @@ void __pthread_rwlock_unlock(pthread_rwlock_t *lock)
 #define pthread_condattr_setpshared(...)        __pthread_rc(pthread_condattr_setpshared, 0, ## __VA_ARGS__)
 #define pthread_condattr_getclock(...)          __pthread_rc(pthread_condattr_getclock, 0, ## __VA_ARGS__)
 #define pthread_condattr_setclock(...)          __pthread_rc(pthread_condattr_setclock, 0, ## __VA_ARGS__)
-
-static inline __pthread_unused
-void __pthread_condattr_destroy(pthread_condattr_t *attr)
-{
-    if (__pthread_likely(attr))
-        pthread_condattr_destroy(attr);
-}
-
-#define PTHREAD_CONDATTR_RAII(__name, __init) \
-    RAII(pthread_condattr_t *, __name, __pthread_condattr_destroy, __init); \
-    pthread_condattr_init(__name)
 
 // pthread_cond_t
 #define pthread_cond_init(...)                  __pthread_rc(pthread_cond_init, 0, ## __VA_ARGS__)
@@ -287,33 +214,11 @@ void __pthread_condattr_destroy(pthread_condattr_t *attr)
 #define pthread_spin_trylock(...)               __pthread_rc(pthread_spin_trylock, EBUSY, ## __VA_ARGS__)
 #define pthread_spin_unlock(...)                __pthread_rc(pthread_spin_unlock, 0, ## __VA_ARGS__)
 
-static inline __pthread_unused
-void __pthread_spin_unlock(pthread_spinlock_t *lock)
-{
-    if (__pthread_likely(lock))
-        pthread_spin_unlock(lock);
-}
-
-#define PTHREAD_SPINLOCK_RAII(__name, __init) \
-    RAII(pthread_spinlock_t *, __name, __pthread_spin_unlock, __init); \
-    pthread_spin_lock(__name)
-
 // pthread_barrierattr_t
 #define pthread_barrierattr_init(...)           __pthread_rc(pthread_barrierattr_init, 0, ## __VA_ARGS__)
 #define pthread_barrierattr_destroy(...)        __pthread_rc(pthread_barrierattr_destroy, 0, ## __VA_ARGS__)
 #define pthread_barrierattr_getpshared(...)     __pthread_rc(pthread_barrierattr_getpshared, 0, ## __VA_ARGS__)
 #define pthread_barrierattr_setpshared(...)     __pthread_rc(pthread_barrierattr_setpshared, 0, ## __VA_ARGS__)
-
-static inline __pthread_unused
-void __pthread_barrierattr_destroy(pthread_barrierattr_t *attr)
-{
-    if (__pthread_likely(attr))
-        pthread_barrierattr_destroy(attr);
-}
-
-#define PTHREAD_BARRIERATTR_RAII(__name, __init) \
-    RAII(pthread_barrierattr_t *, __name, __pthread_barrierattr_destroy, __init); \
-    pthread_barrierattr_init(__name)
 
 // pthread_barrier_t
 #define pthread_barrier_init(...)               __pthread_rc(pthread_barrier_init, 0, ## __VA_ARGS__)
