@@ -16,35 +16,11 @@
 #   endif
 #endif
 
-#ifndef __pthread_likely
-#   if defined(__GNUC__) || __pthread_has_builtin(__builtin_expect)
-#       define __pthread_likely(x) (__builtin_expect(!!(x), 1))
-#   else
-#       define __pthread_likely(x) (x)
-#   endif
-#endif
-
 #ifndef __pthread_unlikely
 #   if defined(__GNUC__) || __pthread_has_builtin(__builtin_expect)
 #       define __pthread_unlikely(x) (__builtin_expect(!!(x), 0))
 #   else
 #       define __pthread_unlikely(x) (x)
-#   endif
-#endif
-
-#ifndef __pthread_has_attribute
-#   ifdef __has_attribute
-#       define __pthread_has_attribute(x) __has_attribute(x)
-#   else
-#       define __pthread_has_attribute(x) (0)
-#   endif
-#endif
-
-#ifndef __pthread_unused
-#   if defined(__GNUC__) || __pthread_has_attribute(__unused__)
-#       define __pthread_unused __attribute__((__unused__))
-#   else
-#       define __pthread_unused
 #   endif
 #endif
 
@@ -66,6 +42,7 @@
 // common
 #define pthread_once(...)                       __pthread_rc(pthread_once, 0, ## __VA_ARGS__)
 #define pthread_kill(...)                       __pthread_rc(pthread_kill, 0, ## __VA_ARGS__)
+#define pthread_yield(...)                      __pthread_rc(pthread_yield, 0, ## __VA_ARGS__)
 #define pthread_sigmask(...)                    __pthread_rc(pthread_sigmask, 0, ## __VA_ARGS__)
 #define pthread_sigqueue(...)                   __pthread_rc(pthread_sigqueue, 0, ## __VA_ARGS__)
 #define pthread_getconcurrency(...)             __pthread_rc(pthread_getconcurrency, 0, ## __VA_ARGS__)
@@ -73,6 +50,8 @@
 #define pthread_setcancelstate(...)             __pthread_rc(pthread_setcancelstate, 0, ## __VA_ARGS__)
 #define pthread_setcanceltype(...)              __pthread_rc(pthread_setcanceltype, 0, ## __VA_ARGS__)
 #define pthread_atfork(...)                     __pthread_rc(pthread_atfork, 0, ## __VA_ARGS__)
+
+// pthread_key_t
 #define pthread_key_create(...)                 __pthread_rc(pthread_key_create, 0, ## __VA_ARGS__)
 #define pthread_key_delete(...)                 __pthread_rc(pthread_key_delete, 0, ## __VA_ARGS__)
 #define pthread_setspecific(...)                __pthread_rc(pthread_setspecific, 0, ## __VA_ARGS__)
