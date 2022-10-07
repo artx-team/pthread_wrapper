@@ -32,11 +32,11 @@
 #define __pthread_var1(x, y) __pthread_var2(x, __pthread_concat(y, __LINE__))
 #define __pthread_var2(x, y) __pthread_concat(__pthread_tmp, __pthread_concat(y, x))
 
-#define __pthread_rc(__pthread_func, __rc, ...) __extension__ ({ \
-        int __pthread_var(rc) = (__pthread_func)(__VA_ARGS__); \
-        if (__pthread_unlikely(__pthread_var(rc) && __pthread_var(rc) != (__rc))) \
+#define __pthread_rc(fn, rc, ...) __extension__ ({ \
+        int __pthread_var(fn) = (fn)(__VA_ARGS__); \
+        if (__pthread_unlikely(__pthread_var(fn) && __pthread_var(fn) != (rc))) \
             abort(); \
-        __pthread_var(rc); \
+        __pthread_var(fn); \
     })
 
 // common
