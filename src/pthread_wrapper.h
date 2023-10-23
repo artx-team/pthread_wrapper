@@ -17,7 +17,7 @@
 #endif
 
 #ifndef __pthread_unlikely
-#   if defined(__GNUC__) || __pthread_has_builtin(__builtin_expect)
+#   if __pthread_has_builtin(__builtin_expect)
 #       define __pthread_unlikely(x) (__builtin_expect(!!(x), 0))
 #   else
 #       define __pthread_unlikely(x) (x)

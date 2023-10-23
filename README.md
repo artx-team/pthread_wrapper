@@ -3,6 +3,6 @@
 Single header `pthread` wrapper which aborts execution on errors.
 
 ````bash
-cmake . -Bbuild -DCMAKE_INSTALL_PREFIX=/usr/local
-cmake --build build --target install
+meson setup build -Dprefix=/usr/local
+meson install -Cbuild
 ````
